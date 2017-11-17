@@ -10,6 +10,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Media;
+using System.Linq;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -88,6 +89,15 @@ namespace Counter
 
             _mainModel.ChangeValue(_btnTemp.Name, _btnTag);
             updateItemPane = false;
+
+            if (CounterSplitView.IsPaneOpen == true)
+            {
+                if (_btnTag == selectedItem.ID)
+                {
+                    txtStartingCount.Text = MainModel.CounterItemsCollection.FirstOrDefault<CounterItem>(
+                        p => p.ID == _btnTag).Count.ToString();
+                }
+            }
         }
 
         private void gvItems_Tapped(object sender, TappedRoutedEventArgs e)
