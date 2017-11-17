@@ -10,6 +10,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Media;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -60,17 +61,25 @@ namespace Counter
         {
             _mainModel = new MainPageViewModel();
             val = new Validation();
-            GetData();
+
+            Task.Run(() =>
+            {
+                GetData();
+            });
         }
 
-        private void GetData()
+        private async void GetData()
         {
             _mainModel.GetData();
-            CleanNewItemData();
-            ChangeHeadString();
 
-            gvItems.ItemsSource = _mainModel.CounterItemsCollection;
-            prProgress.IsActive = false;
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                CleanNewItemData();
+                ChangeHeadString();
+            
+                gvItems.ItemsSource = _mainModel.CounterItemsCollection;
+                prProgress.IsActive = false;
+            });
         }
 
         private void ChangeHeadString()
@@ -83,11 +92,21 @@ namespace Counter
 
         private void ChangeCount_Click(object sender, RoutedEventArgs e)
         {
-            Button _btnTemp = (Button)sender;
-            int _btnTag = Int32.Parse((_btnTemp).Tag.ToString());
+            try
+            {
+                Button _btnTemp = (Button)sender;
+                int _btnTag = Int32.Parse((_btnTemp).Tag.ToString());
 
-            _mainModel.ChangeValue(_btnTemp.Name, _btnTag);
-            updateItemPane = false;
+                _mainModel.ChangeValue(_btnTemp.Name, _btnTag);
+                updateItemPane = false;
+                txbMessage.Visibility = Visibility.Collapsed;
+            } catch (Exception ex)
+            {
+#if DEBUG
+                txbMessage.Visibility = Visibility.Visible;
+                txbMessage.Text = "Exception found: " + ex.Message;
+#endif
+            }
         }
 
         private void gvItems_Tapped(object sender, TappedRoutedEventArgs e)

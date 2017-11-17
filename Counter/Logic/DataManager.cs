@@ -68,19 +68,22 @@ namespace Counter.Logic
                             var tempList = ((JArray)JsonConvert.DeserializeObject(jsonContents)).ToList();
                             foreach (var item in tempList)
                             {
-                                if (item != null)
+                                try
                                 {
-                                    tempCollection.Add(new CounterItem(tempCollection)
+                                    if (item != null)
                                     {
-                                        ID = Int32.Parse(item["ID"].ToString()),
-                                        Title = item["Title"].ToString(),
-                                        Count = Int32.Parse(item["Count"].ToString()),
-                                        Description = item["Description"].ToString(),
-                                        CreationDate = DateTime.Parse(item["CreationDate"].ToString()),
-                                        ModificationDate = DateTime.Parse(item["ModificationDate"].ToString())
+                                        tempCollection.Add(new CounterItem(tempCollection)
+                                        {
+                                            ID = Int32.Parse(item["ID"].ToString()),
+                                            Title = item["Title"].ToString(),
+                                            Count = Int32.Parse(item["Count"].ToString()),
+                                            Description = item["Description"].ToString(),
+                                            CreationDate = DateTime.Parse(item["CreationDate"].ToString()),
+                                            ModificationDate = DateTime.Parse(item["ModificationDate"].ToString())
 
-                                    });
-                                }
+                                        });
+                                    }
+                                } catch (Exception ex) { Debug.WriteLine("Error while loading data: " + ex.Message); }
                             }
                         }
                     }

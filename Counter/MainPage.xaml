@@ -22,6 +22,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <RelativePanel>
@@ -218,5 +219,11 @@
                 </RelativePanel>
             </SplitView.Content>
         </SplitView>
+
+        <TextBlock Name="txbMessage"
+                   Grid.Row="2"
+                   TextWrapping="WrapWholeWords"
+                   Visibility="Collapsed"
+                   Text="" />
     </Grid>
 </Page>
